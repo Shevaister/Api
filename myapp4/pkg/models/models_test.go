@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strconv"
 	"testing"
-	"time"
 )
 
 type testpair struct {
@@ -42,6 +41,10 @@ var testsUpdateComment = []testpair{
 
 var testsUpdatePost = []testpair{
 	{"3", map[string]interface{}{"ID": 3, "UserID": 1, "Title": "not", "Body": "hello"}},
+}
+
+var testsRegisterLogin = []testpair{
+	{"3", map[string]interface{}{"Email": "smt@gmail.com", "Password": "sssy"}},
 }
 
 func TestGetAllComments(t *testing.T) {
@@ -104,7 +107,6 @@ func TestGetUser(t *testing.T) {
 }
 
 func TestCreateComment(t *testing.T) {
-	time.Sleep(2 * time.Second)
 	CreateComment(testsCreateComment[0].res)
 	v, _ := GetComment(testsCreateComment[0].value)
 	if strconv.Itoa(int(v.ID)) != testsCreateComment[0].value || int(v.PostID) != testsCreateComment[0].res["PostID"] || v.Name != testsCreateComment[0].res["Name"] || v.Email != testsCreateComment[0].res["Email"] || v.Body != testsCreateComment[0].res["Body"] {
@@ -116,7 +118,6 @@ func TestCreateComment(t *testing.T) {
 }
 
 func TestCreatePost(t *testing.T) {
-	time.Sleep(2 * time.Second)
 	CreatePost(testsCreatePost[0].res)
 	v, _ := GetPost(testsCreatePost[0].value)
 	if strconv.Itoa(int(v.ID)) != testsCreatePost[0].value || int(v.UserID) != testsCreatePost[0].res["UserID"] || v.Title != testsCreatePost[0].res["Title"] || v.Body != testsCreatePost[0].res["Body"] {
@@ -129,7 +130,6 @@ func TestCreatePost(t *testing.T) {
 }
 
 func TestUpdateComment(t *testing.T) {
-	time.Sleep(4 * time.Second)
 	UpdateComment(testsUpdateComment[0].res, testsUpdateComment[0].value)
 	v, _ := GetComment(testsUpdateComment[0].value)
 	if int(v.ID) != testsUpdateComment[0].res["ID"] || int(v.PostID) != testsUpdateComment[0].res["PostID"] || v.Name != testsUpdateComment[0].res["Name"] || v.Email != testsUpdateComment[0].res["Email"] || v.Body != testsUpdateComment[0].res["Body"] {
@@ -139,7 +139,6 @@ func TestUpdateComment(t *testing.T) {
 }
 
 func TestUpdatePost(t *testing.T) {
-	time.Sleep(4 * time.Second)
 	UpdatePost(testsUpdatePost[0].res, testsUpdatePost[0].value)
 	v, _ := GetPost(testsUpdatePost[0].value)
 	if int(v.ID) != testsUpdatePost[0].res["ID"] || int(v.UserID) != testsUpdatePost[0].res["UserID"] || v.Title != testsUpdatePost[0].res["Title"] || v.Body != testsUpdatePost[0].res["Body"] {
@@ -148,7 +147,6 @@ func TestUpdatePost(t *testing.T) {
 }
 
 func TestDeleteComment(t *testing.T) {
-	time.Sleep(6 * time.Second)
 	DeleteComment("4")
 	_, err := GetComment("4")
 	if err == nil {
@@ -157,10 +155,17 @@ func TestDeleteComment(t *testing.T) {
 }
 
 func TestDeletePost(t *testing.T) {
-	time.Sleep(6 * time.Second)
 	DeletePost("3")
 	_, err := GetPost("3")
 	if err == nil {
+		t.Error("Error")
+	}
+}
+
+func TestRegisterLogin(t *testing.T) {
+	Register(testsRegisterLogin[0].res["Email"].(string), testsRegisterLogin[0].res["Password"].(string))
+	err := Login(testsRegisterLogin[0].res["Email"].(string), testsRegisterLogin[0].res["Password"].(string))
+	if err != nil {
 		t.Error("Error")
 	}
 }
