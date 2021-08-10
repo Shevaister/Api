@@ -1,0 +1,351 @@
+basePath: /
+definitions:
+  comments.Comments:
+    properties:
+      PostID:
+        type: integer
+      body:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  posts.Posts:
+    properties:
+      UserID:
+        type: integer
+      body:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
+  users.Users:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is an echo swagger API server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Echo Swagger API
+  version: "1.0"
+paths:
+  /comments:
+    get:
+      consumes:
+      - application/json
+      description: Get all comments
+      produces:
+      - application/json
+      - text/xml
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/comments.Comments'
+            type: array
+      summary: List comments
+      tags:
+      - comments
+  /comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete comment by id
+      parameters:
+      - description: ID of comment to delete
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Delete comment
+      tags:
+      - comments
+    get:
+      consumes:
+      - application/json
+      description: Get comment by id
+      parameters:
+      - description: ID of comment to return
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - text/xml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/comments.Comments'
+        "400":
+          description: Record_not_found
+      summary: Comment by id
+      tags:
+      - comments
+    put:
+      consumes:
+      - application/json
+      description: Update comment by id
+      parameters:
+      - description: ID of comment to update
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data for comment to update
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/comments.Comments'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Comment_not_found
+      summary: Update comment
+      tags:
+      - comments
+  /posts:
+    get:
+      consumes:
+      - application/json
+      description: Get all posts
+      produces:
+      - application/json
+      - text/xml
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/posts.Posts'
+            type: array
+      summary: List posts
+      tags:
+      - posts
+  /posts/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete post by id
+      parameters:
+      - description: ID of post to delete
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Delete post
+      tags:
+      - posts
+    get:
+      consumes:
+      - application/json
+      description: Get post by id
+      parameters:
+      - description: ID of post to return
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      - text/xml
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/posts.Posts'
+        "400":
+          description: Post_not_found
+      summary: Get post
+      tags:
+      - posts
+    put:
+      consumes:
+      - application/json
+      description: Update post by id
+      parameters:
+      - description: ID of post to update
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data for post to update
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/posts.Posts'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Comment_not_found
+      summary: Update post
+      tags:
+      - posts
+  /restricted/comments:
+    post:
+      consumes:
+      - application/json
+      description: Create comment
+      parameters:
+      - description: Data for comment to create
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/comments.Comments'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad_request
+      security:
+      - ApiKeyAuth: []
+      summary: Create comment
+      tags:
+      - comments
+  /restricted/posts:
+    post:
+      consumes:
+      - application/json
+      description: Create post
+      parameters:
+      - description: Data for post to create
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/posts.Posts'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad_request
+      security:
+      - ApiKeyAuth: []
+      summary: Create post
+      tags:
+      - posts
+  /signin:
+    post:
+      consumes:
+      - application/json
+      description: Sign in with email and password
+      parameters:
+      - description: Data for user to login
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/users.Users'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Wrong_login_info
+      summary: Sign in
+      tags:
+      - auth
+  /signin/facebook:
+    get:
+      consumes:
+      - application/json
+      description: Get facebook authorization link
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Sign in throгgh facebook
+      tags:
+      - auth
+  /signin/google:
+    get:
+      consumes:
+      - application/json
+      description: Get google authorization link
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Sign in throгgh google
+      tags:
+      - auth
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: Register an account with email and password
+      parameters:
+      - description: Data for user to create
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/users.Users'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Account_with_this_email_is_already_registred
+      summary: Register
+      tags:
+      - auth
+schemes:
+- http
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
