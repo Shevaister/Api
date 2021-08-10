@@ -10,3 +10,4 @@ You need to have mysql or any database that could be connected with gorm drivers
 
 To set up web service you should change .env variables for yours, you can find them in cmd/main/.env.
 
+Default starting page with swagger "http://localhost:8000/swagger/index.html"
