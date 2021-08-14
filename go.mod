@@ -7,6 +7,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/joho/godotenv v1.3.0
 	github.com/labstack/echo/v4 v4.4.0
+	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/swaggo/echo-swagger v1.1.0
 	github.com/swaggo/swag v1.7.0
 	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914

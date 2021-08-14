@@ -23,9 +23,9 @@ func ReturnAllPosts(c echo.Context) error {
 	result := posts.GetAllPosts()
 	Accept := c.Request().Header.Get("Accept")
 	if Accept == "" || Accept == "application/json" {
-		return c.JSONPretty(http.StatusOK, result, "    ")
+		return c.JSON(http.StatusOK, result)
 	}
-	return c.XMLPretty(http.StatusOK, result, "    ")
+	return c.XML(http.StatusOK, result)
 }
 
 // @Summary Get post
@@ -45,9 +45,9 @@ func ReturnPost(c echo.Context) error {
 	}
 	Accept := c.Request().Header.Get("Accept")
 	if Accept == "" || Accept == "application/json" {
-		return c.JSONPretty(http.StatusOK, result, "    ")
+		return c.JSON(http.StatusOK, result)
 	}
-	return c.XMLPretty(http.StatusOK, result, "    ")
+	return c.XML(http.StatusOK, result)
 }
 
 // @Summary Create post

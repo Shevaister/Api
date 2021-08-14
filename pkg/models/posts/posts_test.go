@@ -1,6 +1,8 @@
 package posts
 
-import "testing"
+import (
+	"testing"
+)
 
 type testpair struct {
 	value string

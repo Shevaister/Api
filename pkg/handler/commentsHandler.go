@@ -22,9 +22,9 @@ func ReturnAllComments(c echo.Context) error {
 	result := comments.GetAllComments()
 	Accept := c.Request().Header.Get("Accept")
 	if Accept == "" || Accept == "application/json" {
-		return c.JSONPretty(http.StatusOK, result, "    ")
+		return c.JSON(http.StatusOK, result)
 	}
-	return c.XMLPretty(http.StatusOK, result, "    ")
+	return c.XML(http.StatusOK, result)
 }
 
 // @Summary Comment by id
@@ -44,9 +44,9 @@ func ReturnComment(c echo.Context) error {
 	}
 	Accept := c.Request().Header.Get("Accept")
 	if Accept == "" || Accept == "application/json" {
-		return c.JSONPretty(http.StatusOK, result, "    ")
+		return c.JSON(http.StatusOK, result)
 	}
-	return c.XMLPretty(http.StatusOK, result, "    ")
+	return c.XML(http.StatusOK, result)
 }
 
 // @Summary Create comment

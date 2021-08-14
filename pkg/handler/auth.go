@@ -6,33 +6,11 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"time"
 
-	"os"
+	"Api/pkg/oauthService"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/facebook"
-	"golang.org/x/oauth2/google"
-)
-
-var (
-	googleOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:8000/token/google",
-		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
-		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
-		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
-		Endpoint:     google.Endpoint,
-	}
-	facebookOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:8000/token/facebook",
-		ClientID:     os.Getenv("FACEBOOK_CLIENT_ID"),
-		ClientSecret: os.Getenv("FACEBOOK_CLIENT_SECRET"),
-		Scopes:       []string{"email", "user_friends"},
-		Endpoint:     facebook.Endpoint,
-	}
-	state = "rando"
 )
 
 // @Summary Register
@@ -76,7 +54,7 @@ func SignIn(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
-	t := generateToken(request["email"].(string))
+	t := oauthService.GenerateToken(request["email"].(string))
 	return c.JSON(http.StatusOK, map[string]string{
 		"token": t,
 	})
@@ -90,7 +68,7 @@ func SignIn(c echo.Context) error {
 // @Success 200 {object} string
 // @Router /signin/google [get]
 func GoogleSignIn(c echo.Context) error {
-	result := googleOauthConfig.AuthCodeURL(state)
+	result := oauthService.GoogleOauthConfig.AuthCodeURL(oauthService.State)
 	return c.JSON(http.StatusOK, result)
 }
 
@@ -102,12 +80,12 @@ func GoogleSignIn(c echo.Context) error {
 // @Success 200 {object} string
 // @Router /signin/facebook [get]
 func FacebookSignIn(c echo.Context) error {
-	result := facebookOauthConfig.AuthCodeURL(state)
+	result := oauthService.FacebookOauthConfig.AuthCodeURL(oauthService.State)
 	return c.JSON(http.StatusOK, result)
 }
 
 func GetAuthToken(c echo.Context) error {
-	if c.FormValue("state") != state {
+	if c.FormValue("state") != oauthService.State {
 		return c.String(http.StatusOK, "state is not valid")
 	}
 
@@ -119,9 +97,9 @@ func GetAuthToken(c echo.Context) error {
 	source := c.Param("source")
 
 	if source == "google" {
-		token, err = googleOauthConfig.Exchange(context.Background(), c.FormValue("code"))
+		token, err = oauthService.GoogleOauthConfig.Exchange(context.Background(), c.FormValue("code"))
 	} else {
-		token, err = facebookOauthConfig.Exchange(context.Background(), c.FormValue("code"))
+		token, err = oauthService.FacebookOauthConfig.Exchange(context.Background(), c.FormValue("code"))
 	}
 	if err != nil {
 		return c.String(http.StatusOK, "could not get the token")
@@ -149,26 +127,8 @@ func GetAuthToken(c echo.Context) error {
 	}
 	user := users.GetUser((data["email"]).(string))
 
-	t := generateToken(user.Email)
+	t := oauthService.GenerateToken(user.Email)
 	return c.JSON(http.StatusOK, map[string]string{
 		"token": t,
 	})
-}
-
-func generateToken(Email string) (t string) {
-	// Create token
-	JWTToken := jwt.New(jwt.SigningMethodHS256)
-
-	// Set claims
-	claims := JWTToken.Claims.(jwt.MapClaims)
-	claims["name"] = Email
-	claims["admin"] = true
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-
-	// Generate encoded token
-	t, err := JWTToken.SignedString([]byte("secret"))
-	if err != nil {
-		return
-	}
-	return
 }
