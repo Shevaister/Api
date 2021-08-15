@@ -4,6 +4,7 @@ import (
 	"Api/pkg/models/users"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -85,10 +86,10 @@ func FacebookSignIn(c echo.Context) error {
 }
 
 func GetAuthToken(c echo.Context) error {
+	fmt.Print(c)
 	if c.FormValue("state") != oauthService.State {
 		return c.String(http.StatusOK, "state is not valid")
 	}
-
 	var (
 		response *http.Response
 		token    *oauth2.Token
@@ -128,6 +129,7 @@ func GetAuthToken(c echo.Context) error {
 	user := users.GetUser((data["email"]).(string))
 
 	t := oauthService.GenerateToken(user.Email)
+	fmt.Print(t)
 	return c.JSON(http.StatusOK, map[string]string{
 		"token": t,
 	})

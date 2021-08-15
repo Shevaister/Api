@@ -14,9 +14,9 @@ import (
 )
 
 var (
-	postsJSON = `[{"ID":1,"UserID":1,"Title":"not","Body":"dsadasdadwaa"},{"ID":2,"UserID":1,"Title":"not","Body":"dsadasdadwaa"}]
+	stringPostsJSON = `[{"ID":1,"UserID":1,"Title":"not","Body":"dsadasdadwaa"},{"ID":2,"UserID":1,"Title":"not","Body":"dsadasdadwaa"}]
 `
-	postJSON = `{"ID":1,"UserID":1,"Title":"not","Body":"dsadasdadwaa"}
+	stringPostJSON = `{"ID":1,"UserID":1,"Title":"not","Body":"dsadasdadwaa"}
 `
 	createPostJSON, _ = json.Marshal(map[string]interface{}{"id": 0, "UserID": 1, "Title": "not", "Body": "x"})
 	updatePostJSON, _ = json.Marshal(map[string]interface{}{"id": 0, "UserID": 5, "Title": "not", "Body": "y"})
@@ -33,7 +33,7 @@ func TestReturnAllPosts(t *testing.T) {
 	//Assertions
 	if assert.NoError(t, ReturnAllPosts(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
-		assert.Equal(t, postsJSON, rec.Body.String())
+		assert.Equal(t, stringPostsJSON, rec.Body.String())
 	}
 }
 
@@ -50,7 +50,7 @@ func TestReturnPost(t *testing.T) {
 	//Assertions
 	if assert.NoError(t, ReturnPost(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
-		assert.Equal(t, postJSON, rec.Body.String())
+		assert.Equal(t, stringPostJSON, rec.Body.String())
 	}
 }
 
