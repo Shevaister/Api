@@ -1,11 +1,13 @@
 package handler
 
 import (
-	"Api/pkg/models/posts"
-	"Api/pkg/models/users"
+	//"Api/pkg/models/users"
 	"encoding/json"
 	"net/http"
 	"strconv"
+
+	"Api/pkg/db/repositoryInit/post"
+	u "Api/pkg/db/repositoryInit/user"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
@@ -20,7 +22,7 @@ import (
 // @Success 200 {array} posts.Posts
 // @Router /posts [get]
 func ReturnAllPosts(c echo.Context) error {
-	result := posts.GetAllPosts()
+	result := post.Repository.GetAllPosts()
 	Accept := c.Request().Header.Get("Accept")
 	if Accept == "" || Accept == "application/json" {
 		return c.JSON(http.StatusOK, result)
@@ -39,7 +41,7 @@ func ReturnAllPosts(c echo.Context) error {
 // @Failure 400 "Post_not_found"
 // @Router /posts/{id} [get]
 func ReturnPost(c echo.Context) error {
-	result, err := posts.GetPost(c.Param("id"))
+	result, err := post.Repository.GetPost(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
@@ -69,9 +71,9 @@ func CreatePost(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	request["UserID"] = (users.GetUser(email)).ID
+	request["UserID"] = (u.Repository.GetUser(email)).ID
 	request["id"] = 0
-	posts.CreatePost(request)
+	post.Repository.CreatePost(request)
 	return c.JSON(http.StatusOK, nil)
 }
 
@@ -95,7 +97,7 @@ func UpdatePost(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	err = posts.UpdatePost(request, c.Param("id"))
+	err = post.Repository.UpdatePost(request)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
@@ -111,6 +113,6 @@ func UpdatePost(c echo.Context) error {
 // @Success 200 "OK"
 // @Router /posts/{id} [delete]
 func DeletePost(c echo.Context) error {
-	posts.DeletePost(c.Param("id"))
+	post.Repository.DeletePost(c.Param("id"))
 	return c.JSON(http.StatusOK, nil)
 }

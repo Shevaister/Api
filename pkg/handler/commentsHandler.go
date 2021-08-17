@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"Api/pkg/models/comments"
+	"Api/pkg/db/repositoryInit/comment"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -19,7 +19,7 @@ import (
 // @Success 200 {array} comments.Comments
 // @Router /comments [get]
 func ReturnAllComments(c echo.Context) error {
-	result := comments.GetAllComments()
+	result := comment.Repository.GetAllComments()
 	Accept := c.Request().Header.Get("Accept")
 	if Accept == "" || Accept == "application/json" {
 		return c.JSON(http.StatusOK, result)
@@ -38,7 +38,7 @@ func ReturnAllComments(c echo.Context) error {
 // @Failure 400 "Record_not_found"
 // @Router /comments/{id} [get]
 func ReturnComment(c echo.Context) error {
-	result, err := comments.GetComment(c.Param("id"))
+	result, err := comment.Repository.GetComment(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
@@ -70,7 +70,7 @@ func CreateComment(c echo.Context) error {
 	}
 	request["email"] = email
 	request["id"] = 0
-	comments.CreateComment(request)
+	comment.Repository.CreateComment(request)
 	return c.JSON(http.StatusOK, nil)
 }
 
@@ -94,7 +94,7 @@ func UpdateComment(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	err = comments.UpdateComment(request, c.Param("id"))
+	err = comment.Repository.UpdateComment(request)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
@@ -110,6 +110,6 @@ func UpdateComment(c echo.Context) error {
 // @Success 200 "OK"
 // @Router /comments/{id} [delete]
 func DeleteComment(c echo.Context) error {
-	comments.DeleteComment(c.Param("id"))
+	comment.Repository.DeleteComment(c.Param("id"))
 	return c.JSON(http.StatusOK, nil)
 }

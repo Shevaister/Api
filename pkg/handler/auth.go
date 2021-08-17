@@ -1,13 +1,12 @@
 package handler
 
 import (
-	"Api/pkg/models/users"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
+	"Api/pkg/db/repositoryInit/user"
 	"Api/pkg/oauthService"
 
 	"github.com/labstack/echo/v4"
@@ -29,7 +28,7 @@ func SignUp(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	success := users.Register(request["email"].(string), request["password"].(string))
+	success := user.Repository.Register(request["email"].(string), request["password"].(string))
 	if !success {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
@@ -51,7 +50,7 @@ func SignIn(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	err = users.Login(request["email"].(string), request["password"].(string))
+	err = user.Repository.Login(request["email"].(string), request["password"].(string))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
@@ -86,7 +85,6 @@ func FacebookSignIn(c echo.Context) error {
 }
 
 func GetAuthToken(c echo.Context) error {
-	fmt.Print(c)
 	if c.FormValue("state") != oauthService.State {
 		return c.String(http.StatusOK, "state is not valid")
 	}
@@ -126,10 +124,9 @@ func GetAuthToken(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusOK, "failed unmarshalng response body")
 	}
-	user := users.GetUser((data["email"]).(string))
+	u := user.Repository.GetUser((data["email"]).(string))
 
-	t := oauthService.GenerateToken(user.Email)
-	fmt.Print(t)
+	t := oauthService.GenerateToken(u.Email)
 	return c.JSON(http.StatusOK, map[string]string{
 		"token": t,
 	})

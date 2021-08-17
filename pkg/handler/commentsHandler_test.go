@@ -63,7 +63,7 @@ func TestCreateComment(t *testing.T) {
 
 	h := middleware.JWT([]byte("secret"))(handler)
 
-	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiZXhwIjoxNjI5MDEwNzgxLCJuYW1lIjoiZGVncmFlMDAwQGdtYWlsLmNvbSJ9.AKQMgE5pjeM6h4tKZoSU35YhthcHInoVlUucdIVfnG0"
+	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiZXhwIjoxNjI5NDg1NTI3LCJuYW1lIjoieWV2aGVuLnNoZXZjaHVrQG51cmUudWEifQ.elg5kf-2Pt2mYl9e5V75NF1IAWh2ZCKcYS134Sj20Ro"
 
 	req := httptest.NewRequest(http.MethodGet, "/", bytes.NewBuffer(createCommentJSON))
 	res := httptest.NewRecorder()

@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	user, _ = json.Marshal(map[string]interface{}{"email": "dg@gmail.com", "password": "ghgw"})
+	testUser, _ = json.Marshal(map[string]interface{}{"email": "ddg@gmail.com", "password": "ghgwg"})
 )
 
 func TestGoogleSignIn(t *testing.T) {
@@ -46,7 +46,7 @@ func TestFacebookSignIn(t *testing.T) {
 func TestSignUp(t *testing.T) {
 	// Setup
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/", bytes.NewBuffer(user))
+	req := httptest.NewRequest(http.MethodGet, "/", bytes.NewBuffer(testUser))
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	c.SetPath("/signup")
@@ -60,7 +60,7 @@ func TestSignUp(t *testing.T) {
 func TestSignIn(t *testing.T) {
 	// Setup
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/", bytes.NewBuffer(user))
+	req := httptest.NewRequest(http.MethodGet, "/", bytes.NewBuffer(testUser))
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	c.SetPath("/signin")
